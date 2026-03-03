@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIMO.WATCHES — Montres de Luxe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+<style>
+/* OVERRIDE FINAL — Boutons + Trust badges */
+.btn-commander {
+  width: 100% !important;
+  display: block !important;
+  padding: 14px !important;
+  margin-bottom: 8px !important;
+  background: #27AE60 !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  box-shadow: 0 4px 18px rgba(39,174,96,0.4) !important;
+}
+.btn-commander:hover {
+  background: #1E8449 !important;
+  box-shadow: 0 6px 24px rgba(39,174,96,0.55) !important;
+}
+.btn-cart-add {
+  width: 100% !important;
+  display: block !important;
+  padding: 10px !important;
+  background: #C9A96E !important;
+  color: #000000 !important;
+  border: none !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  text-align: center !important;
+}
+.btn-cart-add:hover { background: #d4b87a !important; }
+.trust-badge.stock { display: inline-block !important; color: #27AE60 !important; background: rgba(39,174,96,0.1) !important; border: 1px solid rgba(39,174,96,0.2) !important; font-size: 8px !important; font-weight: 600 !important; padding: 3px 6px !important; }
+.trust-badge.delivery { display: inline-block !important; color: #2980B9 !important; background: rgba(41,128,185,0.1) !important; border: 1px solid rgba(41,128,185,0.2) !important; font-size: 8px !important; font-weight: 600 !important; padding: 3px 6px !important; }
+.pcard-trust-mini { display: flex !important; flex-direction: column !important; gap: 3px !important; align-items: flex-end !important; }
+</style>
+
+</head>
+<body>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- PROMO POPUP -->
+<div class="promo-popup-bg" id="promoBg">
+  <div class="promo-popup">
+    <button class="promo-close" onclick="closePromoPopup()">×</button>
+    <div class="promo-popup-tag">Offre Limitée</div>
+    <div class="promo-popup-title">🎁 Bienvenue chez<br><span>HIMO.WATCHES</span></div>
+    <div class="promo-popup-desc">Profitez de <strong>-15% sur votre première commande</strong><br>avec le code promo</div>
+    <div class="promo-code-box">HIMO15</div>
+    <div class="promo-popup-expires">Offre valable aujourd'hui seulement</div>
+    <button class="btn-gold" style="width:100%;margin-top:20px" onclick="closePromoPopup()">Profiter de l'Offre →</button>
+  </div>
+</div>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner" id="promoBanner">
+  <div class="promo-banner-inner">
+    <span class="promo-flash">⚡</span>
+    <span>OFFRE SPÉCIALE — <strong>-20% sur toutes les Casio</strong> avec le code <strong>CASIO20</strong></span>
+    <span class="promo-sep">·</span>
+    <span>LIVRAISON GRATUITE dès <strong>5 000 MAD</strong></span>
+    <span class="promo-sep">·</span>
+    <span class="promo-flash">⚡</span>
+    <span>OFFRE SPÉCIALE — <strong>-20% sur toutes les Casio</strong> avec le code <strong>CASIO20</strong></span>
+    <span class="promo-sep">·</span>
+    <span>LIVRAISON GRATUITE dès <strong>5 000 MAD</strong></span>
+    <span class="promo-sep">·</span>
+  </div>
+  <button class="promo-banner-close" onclick="document.getElementById('promoBanner').style.display='none'">×</button>
+</div>
+
+<!-- HEADER -->
+<header id="hdr">
+  <a href="#" class="logo-wrap">
+    <span class="logo-main">HIMO</span>
+    <span class="logo-sub">Watches · Maison de Luxe</span>
+  </a>
+  <nav id="mainNav">
+    <a href="#products" onclick="closeMenu()">Collections</a>
+    <a href="#promos" onclick="closeMenu()">Promotions</a>
+    <a href="#maison" onclick="closeMenu()">La Maison</a>
+    <a href="#footer" onclick="closeMenu()">Contact</a>
+  </nav>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('fr')" id="lang-fr">FR</button>
+    <span class="lang-sep">|</span>
+    <button class="lang-btn" onclick="setLang('ar')" id="lang-ar">ع</button>
+    <span class="lang-sep">|</span>
+    <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="header-right">
+    <button class="cart-btn" onclick="openCart()">
+      ◻ Panier
+      <span class="cart-count" id="cartBadge"></span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO HIDDEN -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-rings">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow" id="heroFounded">Maison Himo · Fondée 2024</div>
+    <h1 class="hero-h1"><span id="heroTitle1">L'Art</span><br><em><span id="heroTitle2">du Temps</span></em></h1>
+    <p class="hero-sub"><span id="heroSub">Montres de Prestige · Collections Exclusives · Maroc</span></p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-gold"><span id="heroBtn1">Explorer la Collection</span></a>
+      <a href="#promos" class="btn-outline"><span id="heroBtn2">Offres du Jour</span></a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-num">500+</span><span class="hero-stat-lbl">Clients</span></div>
+      <div class="hero-stat-sep"></div>
+      <div class="hero-stat"><span class="hero-stat-num">50+</span><span class="hero-stat-lbl">Modèles</span></div>
+      <div class="hero-stat-sep"></div>
+      <div class="hero-stat"><span class="hero-stat-num">24H</span><span class="hero-stat-lbl">Livraison</span></div>
+    </div>
+    <div class="hero-trust">
+      <span>✓ Paiement à la livraison</span>
+      <span>✓ Retour 7 jours</span>
+      <span>✓ Livraison nationale</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Défiler</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span>HIMO.WATCHES</span><span class="dot">◆</span>
+    <span>MONTRES DE LUXE</span><span class="dot">◆</span>
+    <span>ROLEX · FESTINA · CASIO · SWATCH</span><span class="dot">◆</span>
+    <span>LIVRAISON MAROC</span><span class="dot">◆</span>
+    <span>CODE PROMO: HIMO15</span><span class="dot">◆</span>
+    <span>HIMO.WATCHES</span><span class="dot">◆</span>
+    <span>MONTRES DE LUXE</span><span class="dot">◆</span>
+    <span>ROLEX · FESTINA · CASIO · SWATCH</span><span class="dot">◆</span>
+    <span>LIVRAISON MAROC</span><span class="dot">◆</span>
+    <span>CODE PROMO: HIMO15</span><span class="dot">◆</span>
+  </div>
+</div>
+
+<!-- OFFRES DU JOUR -->
+<section class="promos-sec" id="promos">
+  <div class="promos-header">
+    <div>
+      <div class="sec-eyebrow"><span id="secPromosEye">Offres Exclusives</span></div>
+      <h2 class="sec-title" id="secPromos">Offres <em>du Jour</em></h2>
+    </div>
+    <div class="countdown-wrap">
+      <div class="countdown-label">⏱ Ces offres expirent dans</div>
+      <div class="countdown-timer">
+        <div class="cd-block"><span id="cdH">00</span><small id="cdH_lbl">Heures</small></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span id="cdM">00</span><small id="cdM">Min</small></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span id="cdS">00</span><small id="cdS">Sec</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="promos-grid" id="promosGrid"></div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-sec" id="products">
+  <div class="products-top">
+    <div>
+      <div class="sec-eyebrow">Notre Collection</div>
+      <h2 class="sec-title">Pièces <em>d'Exception</em></h2>
+    </div>
+    <div class="filter-bar">
+      <button class="ftab on" onclick="filterCat('all',this)"><span>Tous</span></button>
+      <button class="ftab" onclick="filterCat('H',this)"><span>Hommes</span></button>
+      <button class="ftab" onclick="filterCat('F',this)"><span>Femmes</span></button>
+    </div>
+  </div>
+  <div class="grid" id="prodGrid"></div>
+  <div id="prodPagination"></div>
+</section>
+
+<!-- MAISON -->
+<section id="maison">
+  <div class="maison-sec">
+    <div class="clock-box">
+      <div class="clk">
+        <div id="clkTicks"></div>
+        <div class="clk-hand clk-h" id="clkH"></div>
+        <div class="clk-hand clk-m" id="clkM"></div>
+        <div class="clk-hand clk-s" id="clkS"></div>
+        <div class="clk-dot"></div>
+      </div>
+    </div>
+    <div class="maison-txt">
+      <div class="sec-eyebrow">La Maison Himo</div>
+      <h2 class="sec-title">L'Excellence<br><em>Horlogère</em></h2>
+      <p class="maison-desc">Née de la passion pour les belles montres, Himo.Watches vous propose une sélection rigoureuse des meilleures marques mondiales livrées partout au Maroc.</p>
+      <ul class="feat-list">
+        <li>Authenticité garantie sur chaque pièce</li>
+        <li>Livraison rapide partout au Maroc</li>
+        <li>Paiement à la livraison disponible</li>
+        <li>Service client disponible sur WhatsApp</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="foot-brand">
+    <span class="logo-main">HIMO</span>
+    <span class="logo-sub">Watches · Maison de Luxe</span>
+    <p class="foot-desc">L'art de mesurer le temps, livré jusqu'à votre porte.</p>
+  </div>
+  <div>
+    <div class="foot-col-ttl">Navigation</div>
+    <ul class="foot-links">
+      <li><a href="#products">Collections</a></li>
+      <li><a href="#promos">Promotions</a></li>
+      <li><a href="#maison">La Maison</a></li>
+      <li><a href="#footer">Contact</a></li>
+    </ul>
+  </div>
+  <div class="foot-contact">
+    <div class="foot-col-ttl">Contact</div>
+    <p>WhatsApp: <a href="https://wa.me/212681345355">+212 681 345 355</a><br>
+    Email: <a href="/cdn-cgi/l/email-protection#9bf8f4f5effaf8efdbf3f2f6f4b5ecfaeff8f3fee8"><span class="__cf_email__" data-cfemail="f89b97968c999b8cb890919597d68f998c9b909d8b">himowatches@gmail.com</span></a><br>
+    <span id="footLivraison">Maroc — Livraison Nationale</span><br><span id="footHoraires">Lun – Sam: 9h00 – 20h00</span></p>
+  </div>
+</footer>
+<div class="foot-bottom">
+  <span class="foot-copy"><span id="footRights">© 2024 HIMO.WATCHES · Tous droits réservés</span> · Maroc</span>
+  <a href="https://wa.me/212681345355" class="foot-wa">◎ Commander sur WhatsApp</a>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="veil" id="veil" onclick="closeCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-hd">
+    <div class="cart-hd-ttl">Votre Panier</div>
+    <button class="x-btn" onclick="closeCart()">×</button>
+  </div>
+  <div class="cart-bd" id="cartBd"></div>
+  <div class="cart-ft" id="cartFt" style="display:none">
+    <div class="cart-total-row">
+      <div class="cart-total-lbl">Total Commande</div>
+      <div class="cart-total-val" id="cartTotal">0 MAD</div>
+    </div>
+    <button class="btn-wa" onclick="orderWA()">◎ Commander par WhatsApp</button>
+    <button class="btn-checkout" onclick="openCheckout()">✦ Commander en Ligne</button>
+  </div>
+</div>
+
+<!-- QUICK ORDER MODAL (simple 2 steps) -->
+<div class="modal-bg" id="quickOrderBg">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-title" id="qoTitle">Commander</div>
+        <div id="qoProdInfo" style="font-size:11px;color:var(--gold);margin-top:4px;letter-spacing:1px"></div>
+      </div>
+      <button class="x-btn" onclick="closeModal('quickOrderBg')">×</button>
+    </div>
+    <div class="modal-bd">
+      <!-- Step 1 -->
+      <div id="qoStep1">
+        <div class="qo-prod-row" id="qoProdRow"></div>
+        <div class="form-sec-ttl" id="mdlInfoTitle">Vos Informations</div>
+        <div class="form-row">
+          <div class="form-grp"><label class="flbl" id="mdlPrenom">Prénom *</label><input class="finp" id="qoNom" placeholder="Mohammed"></div>
+          <div class="form-grp"><label class="flbl" id="mdlTel">Téléphone *</label><input class="finp" id="qoTel" type="tel" placeholder="+212 681 345 355"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp">
+            <label class="flbl" id="mdlVille">Ville *</label>
+            <input class="finp" id="qoVille" placeholder="Casablanca, Rabat, Marrakech...">
+          </div>
+          <div class="form-grp">
+            <label class="flbl" id="mdlPay">Paiement *</label>
+            <select class="finp" id="qoPay">
+              <option value="">Choisir...</option>
+              <option>Paiement à la livraison</option>
+              <option>Virement bancaire</option>
+              <option>CIH Pay</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grp" style="margin-bottom:20px">
+          <label class="flbl" id="mdlAddr">Adresse *</label>
+          <input class="finp" id="qoAddr" placeholder="N° rue, Quartier, Ville...">
+        </div>
+        <button class="btn-gold" style="width:100%" onclick="placeQuickOrder()">✦ Confirmer la Commande</button>
+        <button class="btn-wa" style="margin-top:10px" onclick="orderWASingle()">◎ Commander par WhatsApp</button>
+      </div>
+      <!-- Step 2: Success -->
+      <div id="qoStep2" style="display:none;text-align:center;padding:20px 0">
+        <div class="suc-icon">✓</div>
+        <div class="suc-title">Commande Confirmée !</div>
+        <p class="suc-msg">Merci ! Nous vous contacterons sur <strong id="qoConfTel"></strong> pour confirmer la livraison.</p>
+        <div class="suc-num" id="qoOrderNum"></div>
+        <button class="btn-gold" onclick="closeModal('quickOrderBg')">Continuer les Achats</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT (panier complet) -->
+<div class="modal-bg" id="checkoutBg">
+  <div class="modal-box">
+    <div id="checkoutView">
+      <div class="modal-hd">
+        <div class="modal-title">Finaliser la Commande</div>
+        <button class="x-btn" onclick="closeModal('checkoutBg')">×</button>
+      </div>
+      <div class="modal-bd">
+        <div class="recap" id="orderRecap"></div>
+        <div class="form-sec-ttl" id="mdlInfoTitle">Vos Informations</div>
+        <div class="form-row">
+          <div class="form-grp"><label class="flbl">Prénom</label><input class="finp" id="fNom" placeholder="Mohammed"></div>
+          <div class="form-grp"><label class="flbl">Nom</label><input class="finp" id="fPrenom" placeholder="El Amrani"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="flbl">Téléphone</label><input class="finp" id="fTel" type="tel" placeholder="+212 681 345 355"></div>
+          <div class="form-grp"><label class="flbl">Email (optionnel)</label><input class="finp" id="fEmail" type="email" placeholder="email@exemple.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp full"><label class="flbl">Adresse</label><input class="finp" id="fAddr" placeholder="N° rue, Quartier..."></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp">
+            <label class="flbl">Ville</label>
+            <input class="finp" id="fVille" placeholder="Casablanca, Rabat...">
+          </div>
+          <div class="form-grp">
+            <label class="flbl">Paiement</label>
+            <select class="finp" id="fPay">
+              <option value="">Choisir...</option>
+              <option>Paiement à la livraison</option>
+              <option>Virement bancaire</option>
+              <option>CIH Pay</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-gold" style="width:100%;margin-top:8px;display:block;text-align:center" onclick="placeOrder()">✦ Confirmer la Commande</button>
+      </div>
+    </div>
+    <div class="suc-view" id="sucView">
+      <div class="suc-icon">✓</div>
+      <div class="suc-title">Commande Confirmée !</div>
+      <p class="suc-msg">Merci pour votre confiance.<br>Nous vous contacterons bientôt pour la livraison.</p>
+      <div class="suc-num" id="sucNum"></div>
+      <button class="btn-gold" onclick="closeModal('checkoutBg')">Continuer les Achats</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS MODAL -->
+<div class="modal-bg" id="reviewsBg">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-title">Avis Clients</div>
+        <div id="rvProdName" style="font-size:11px;color:var(--gold);letter-spacing:2px;margin-top:4px"></div>
+      </div>
+      <button class="x-btn" onclick="closeModal('reviewsBg')">×</button>
+    </div>
+    <div class="modal-bd">
+      <div class="rv-summary">
+        <div class="rv-big" id="rvBig">—</div>
+        <div>
+          <div id="rvAvgStars" class="stars-row" style="font-size:20px;margin-bottom:6px"></div>
+          <div class="rv-total" id="rvTotal">0 avis</div>
+        </div>
+      </div>
+      <div id="rvList" style="margin:22px 0;max-height:260px;overflow-y:auto"></div>
+      <div class="rv-form">
+        <div class="form-sec-ttl">Laisser un Avis</div>
+        <div class="form-row">
+          <div class="form-grp"><label class="flbl">Prénom</label><input class="finp" id="rvName" placeholder="Mohammed"></div>
+          <div class="form-grp"><label class="flbl">Note</label><div id="rvStarsWrap" style="padding:12px 0"></div></div>
+        </div>
+        <div class="form-grp" style="margin-bottom:16px">
+          <label class="flbl">Commentaire</label>
+          <textarea class="finp" id="rvComment" rows="3" placeholder="Votre expérience avec cette montre..."></textarea>
+        </div>
+        <button class="btn-gold" style="width:100%" oncl        <button class="btn-gold" style="width:100%" onclick="submitReview()">Publier mon Avis →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
