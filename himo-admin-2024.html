@@ -562,7 +562,7 @@
           <div class="chart-title" style="margin-bottom:20px">ℹ️ Informations Système</div>
           <div style="font-size:12px;color:var(--gray);line-height:2.2">
             <div>API: <span style="color:var(--gold)" id="apiStatus">Vérification...</span></div>
-            <div>Backend: <span style="color:var(--white)" id="apiUrl">http://localhost:3001</span></div>
+            <div>Backend: <span style="color:var(--white)" id="apiUrl">https://himo-backend-production.up.railway.app</span></div>
             <div>Version: <span style="color:var(--white)">HIMO.WATCHES v1.0.0</span></div>
           </div>
         </div>
@@ -623,7 +623,7 @@
 // ============================================
 // CONFIG
 // ============================================
-const API = 'http://localhost:3001/api';
+const API = 'https://himo-backend-production.up.railway.app/api';
 let token     = localStorage.getItem('hw_admin_token') || '';
 let adminEmail = localStorage.getItem('hw_admin_email') || '';
 let allProducts = [];
@@ -1253,7 +1253,7 @@ let evtSource  = null;
 
 function initSSE() {
   if (!token) return;
-  evtSource = new EventSource('http://localhost:3001/api/notifications/stream');
+  evtSource = new EventSource('https://himo-backend-production.up.railway.app/api/notifications/stream');
 
   evtSource.onopen = () => {
     console.log('🔔 Connecté aux notifications');
