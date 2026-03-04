@@ -1253,6 +1253,7 @@ let evtSource  = null;
 
 function initSSE() {
   if (!token) return;
+  if (evtSource) return; // mashi katcreey tnin
   evtSource = new EventSource('https://himo-backend-production.up.railway.app/api/notifications/stream');
 
   evtSource.onopen = () => {
@@ -1270,11 +1271,15 @@ function initSSE() {
   };
 
   evtSource.onerror = () => {
-    setTimeout(initSSE, 5000); // Reconnect
+    evtSource.close();
+    evtSource = null;
+    setTimeout(initSSE, 10000); // reconnect b3d 10s faqt
   };
 }
 
 function handleNewOrder(data) {
+  // Check ila notification already kayna (duplicate protection)
+  if (notifList.find(n => n.orderId === data.orderId)) return;
   notifCount++;
   notifList.unshift(data);
 
