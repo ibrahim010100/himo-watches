@@ -1357,7 +1357,7 @@ function showOrderToast(data) {
 // ============================================
 // PROMOTIONS
 // ============================================
-let allPromos = JSON.parse(localStorage.getItem('hw_admin_promos') || '[]');
+let allPromos = [];
 
 
 function saveWANumber() {
@@ -1374,16 +1374,27 @@ function loadWASettings() {
 }
 
 function savePromos() {
-  localStorage.setItem('hw_admin_promos', JSON.stringify(allPromos));
+  // now saved in DB
 }
 
-function loadPromosPanel() {
+async function loadPromosPanel() {
   // Fill product select
   const sel = document.getElementById('promoProduct');
   if (sel && allProducts) {
     sel.innerHTML = '<option value="">Choisir produit...</option>' +
       allProducts.map(p => `<option value="${p.id}">${p.brand} — ${p.model}</option>`).join('');
   }
+  // Load promos from API
+  try {
+    const data = await apiFetch('/promos');
+    allPromos = data.promos.map(p => ({
+      id: p.product_id,
+      dbId: p.id,
+      discount: p.discount,
+      label: p.label,
+      code: p.code
+    }));
+  } catch(e) { allPromos = []; }
   renderPromosList();
 }
 
@@ -1417,7 +1428,7 @@ function renderPromosList() {
   }).join('');
 }
 
-function addPromo() {
+async function addPromo() {
   const pid      = document.getElementById('promoProduct').value;
   const discount = parseInt(document.getElementById('promoDiscount').value);
   const code     = document.getElementById('promoCode').value.trim().toUpperCase();
@@ -1426,23 +1437,24 @@ function addPromo() {
   if (!discount || discount < 1 || discount > 90) { toast('Invalide', 'Réduction entre 1% et 90%', 'err'); return; }
   if (!code)     { toast('Manquant', 'Entrez un code promo', 'err'); return; }
 
-  if (allPromos.find(p => p.id == pid)) { toast('Existe déjà', 'Ce produit a déjà une promo', 'err'); return; }
-
-  allPromos.push({ id: parseInt(pid), discount, label: `-${discount}%`, code });
-  savePromos();
-  renderPromosList();
-  document.getElementById('promoProduct').value = '';
-  document.getElementById('promoDiscount').value = '';
-  document.getElementById('promoCode').value = '';
-  toast('✓ Promo ajoutée!', `Code: ${code} — -${discount}%`, 'ok');
+  try {
+    await apiFetch('/promos', { method:'POST', body:{ product_id: parseInt(pid), discount, code } });
+    document.getElementById('promoProduct').value = '';
+    document.getElementById('promoDiscount').value = '';
+    document.getElementById('promoCode').value = '';
+    toast('✓ Promo ajoutée!', `Code: ${code} — -${discount}%`, 'ok');
+    loadPromosPanel();
+  } catch(err) { toast('Erreur', err.message, 'err'); }
 }
 
-function deletePromo(idx) {
+async function deletePromo(idx) {
   if (!confirm('Supprimer cette promotion?')) return;
-  allPromos.splice(idx, 1);
-  savePromos();
-  renderPromosList();
-  toast('Supprimée', 'Promotion supprimée', '');
+  const promo = allPromos[idx];
+  try {
+    await apiFetch('/promos/' + promo.dbId, { method:'DELETE' });
+    toast('Supprimée', 'Promotion supprimée', '');
+    loadPromosPanel();
+  } catch(err) { toast('Erreur', err.message, 'err'); }
 }
 
 function playNotifSound() {

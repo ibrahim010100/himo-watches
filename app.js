@@ -177,17 +177,17 @@ async function loadProducts() {
 }
 
 async function loadPromos() {
-  // Kayjibhom mn admin panel (localStorage shared)
-  const saved = localStorage.getItem('hw_admin_promos');
-  if (saved) {
-    try { promos = JSON.parse(saved); return; } catch(e) {}
+  try {
+    const data = await apiFetch('/promos');
+    promos = data.promos.map(p => ({
+      id:       p.product_id,
+      discount: p.discount,
+      label:    p.label,
+      code:     p.code
+    }));
+  } catch(e) {
+    promos = [];
   }
-  // Default ila mazal admin mazetihomx
-  promos = [
-    { id: 3, discount: 20, label: '-20%', code: 'CASIO20' },
-    { id: 9, discount: 15, label: '-15%', code: 'HIMO15' },
-    { id: 4, discount: 25, label: '-25%', code: 'SWATCH25' },
-  ];
 }
 
 async function loadReviewsForProduct(pid) {
