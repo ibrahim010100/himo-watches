@@ -460,7 +460,7 @@ function openQuickOrder(id, promoPrice) {
     </div>`;
   ['qoNom', 'qoTel', 'qoAddr'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('qoVille').value = '';
-  document.getElementById('qoPay').value = '';
+  document.getElementById('qoPay').value = 'Paiement à la livraison';
   document.getElementById('qoStep1').style.display = 'block';
   document.getElementById('qoStep2').style.display = 'none';
   document.getElementById('quickOrderBg').classList.add('on');
