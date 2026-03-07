@@ -227,7 +227,7 @@ function renderPromos() {
         <div style="font-size:10px;color:var(--gray);margin-bottom:12px">Code: <strong style="color:var(--promo)">${promo.code}</strong></div>
         <div class="promo-card-btns">
           <button class="btn-promo-cart" onclick="addToCart(${p.id})">${t('btn_pan')}</button>
-          <button class="btn-promo-order" onclick="openQuickOrder(${p.id})">${t('btn_cmd')}</button>
+          <button class="btn-promo-order" onclick="openQuickOrder(${p.id}, ${priceNew})">${t('btn_cmd')}</button>
         </div>
       </div>
     </div>`;
@@ -441,10 +441,14 @@ function orderWAProduct(id) {
 /* ============================================
    QUICK ORDER
    ============================================ */
-function openQuickOrder(id) {
+let quickPromoPrice = null;
+
+function openQuickOrder(id, promoPrice) {
   quickPid = id;
+  quickPromoPrice = promoPrice || null;
   const p = products.find(x => x.id === id);
   if (!p) return;
+  const displayPrice = promoPrice || p.price;
   document.getElementById('qoTitle').textContent = 'Commander';
   document.getElementById('qoProdInfo').textContent = p.brand + ' — ' + p.model;
   document.getElementById('qoProdRow').innerHTML = `
@@ -452,7 +456,7 @@ function openQuickOrder(id) {
     <div class="qo-info">
       <div class="qo-brand">${p.brand}</div>
       <div class="qo-name">${p.model}</div>
-      <div class="qo-price">MAD ${p.price.toLocaleString('fr-MA')}</div>
+      <div class="qo-price">MAD ${displayPrice.toLocaleString('fr-MA')}</div>
     </div>`;
   ['qoNom', 'qoTel', 'qoAddr'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('qoVille').value = '';
@@ -472,13 +476,14 @@ async function placeQuickOrder() {
 
   const p = products.find(x => x.id === quickPid);
   if (!p) return;
+  const finalPrice = quickPromoPrice || p.price;
 
   const res = await apiFetch('/orders', {
     method: 'POST',
     body: {
       client: { nom, prenom: '', tel, email: '', addr, ville, pay },
-      items:  [{ product_id: p.id, brand: p.brand, model: p.model, price: p.price, quantity: 1 }],
-      total:  p.price,
+      items:  [{ product_id: p.id, brand: p.brand, model: p.model, price: finalPrice, quantity: 1 }],
+      total:  finalPrice,
     }
   });
 
