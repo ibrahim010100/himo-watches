@@ -112,12 +112,7 @@ function initCountdown() {
    PROMO POPUP
    ============================================ */
 function initPromoPopup() {
-  if (!localStorage.getItem('hw_promoSeen')) {
-    setTimeout(() => {
-      const bg = document.getElementById('promoBg');
-      if (bg) bg.style.display = 'flex';
-    }, 2500);
-  }
+  // Popup désactivé
 }
 function closePromoPopup() {
   const bg = document.getElementById('promoBg');
@@ -188,6 +183,91 @@ async function loadPromos() {
   } catch(e) {
     promos = [];
   }
+}
+
+let packs = [];
+async function loadPacks() {
+  try {
+    const data = await apiFetch('/packs');
+    packs = Array.isArray(data) ? data : [];
+  } catch(e) {
+    packs = [];
+  }
+}
+
+function renderPacks() {
+  const grid = document.getElementById('packsGrid');
+  if (!grid) return;
+  if (!packs.length) {
+    grid.innerHTML = '<div class="packs-empty">Aucun pack disponible pour le moment</div>';
+    return;
+  }
+  grid.innerHTML = packs.map(pk => {
+    const saving = pk.old_price ? Math.round(pk.old_price - pk.price) : null;
+    const typeLabel = pk.type === 'couple' ? '💑 Couple' : '🎁 Cadeau';
+    const imgHtml = pk.image_url
+      ? `<img class="pack-card-img" src="${pk.image_url}" alt="${pk.name}" loading="lazy">`
+      : `<div class="pack-card-img-placeholder">${pk.type === 'couple' ? '💑' : '🎁'}</div>`;
+    return `
+      <div class="pack-card">
+        ${imgHtml}
+        ${pk.badge ? `<span class="pack-card-badge">${pk.badge}</span>` : ''}
+        <span class="pack-card-type">${typeLabel}</span>
+        <div class="pack-card-body">
+          <div class="pack-card-name">${pk.name}</div>
+          ${pk.description ? `<div class="pack-card-desc">${pk.description}</div>` : ''}
+          <div class="pack-card-sep"></div>
+          <div class="pack-card-prices">
+            <span class="pack-card-price">MAD ${pk.price.toLocaleString('fr-MA')}</span>
+            ${pk.old_price ? `<span class="pack-card-old-price">MAD ${Number(pk.old_price).toLocaleString('fr-MA')}</span>` : ''}
+            ${saving ? `<span class="pack-card-saving">Économie ${saving} MAD</span>` : ''}
+          </div>
+          <button class="pack-card-btn" onclick="openPackOrder(${pk.id})">✦ COMMANDER CE PACK</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Animate cards on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('pack-visible');
+        }, i * 150);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  grid.querySelectorAll('.pack-card').forEach(card => observer.observe(card));
+
+  // Animate header
+  const header = document.getElementById('packsHeader');
+  if (header) {
+    const hObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { header.classList.add('visible'); hObs.unobserve(header); } });
+    }, { threshold: 0.2 });
+    hObs.observe(header);
+  }
+}
+
+function openPackOrder(packId) {
+  const pk = packs.find(p => p.id === packId);
+  if (!pk) return;
+  // Ouvrir quick order avec les infos du pack
+  const qoBg = document.getElementById('quickOrderBg');
+  if (!qoBg) return;
+  document.getElementById('qoProductName').textContent = pk.name;
+  document.getElementById('qoBrand').textContent = pk.type === 'couple' ? '💑 Pack Couple' : '🎁 Pack Cadeau';
+  document.getElementById('qoPrice').textContent = 'MAD ' + Number(pk.price).toLocaleString('fr-MA');
+  const qoImg = document.getElementById('qoProductImg');
+  if (qoImg) qoImg.src = pk.image_url || '';
+  // Store pack info for order
+  qoBg.dataset.packId = packId;
+  qoBg.dataset.packName = pk.name;
+  qoBg.dataset.packPrice = pk.price;
+  document.getElementById('qoPay').value = 'Paiement à la livraison';
+  qoBg.classList.add('on');
 }
 
 async function loadReviewsForProduct(pid) {
@@ -655,8 +735,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadProducts();
   await loadPromos();
+  await loadPacks();
 
   renderPromos();
+  renderPacks();
   renderProducts();
   updateCartUI();
 

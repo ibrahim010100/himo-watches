@@ -56,31 +56,20 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<!-- PROMO POPUP -->
-<div class="promo-popup-bg" id="promoBg">
-  <div class="promo-popup">
-    <button class="promo-close" onclick="closePromoPopup()">×</button>
-    <div class="promo-popup-tag">Offre Limitée</div>
-    <div class="promo-popup-title">🎁 Bienvenue chez<br><span>HIMO.WATCHES</span></div>
-    <div class="promo-popup-desc">Profitez de <strong>-15% sur votre première commande</strong><br>avec le code promo</div>
-    <div class="promo-code-box">HIMO15</div>
-    <div class="promo-popup-expires">Offre valable aujourd'hui seulement</div>
-    <button class="btn-gold" style="width:100%;margin-top:20px" onclick="closePromoPopup()">Profiter de l'Offre →</button>
-  </div>
-</div>
+
 
 <!-- PROMO BANNER -->
 <div class="promo-banner" id="promoBanner">
   <div class="promo-banner-inner">
     <span class="promo-flash">⚡</span>
-    <span>OFFRE SPÉCIALE — <strong>IVRAISON GRATUIT</strong> IVRAISON GRATUIT<strong>IVRAISON GRATUIT</strong></span>
+    <span>LIVRAISON GRATUITE<strong>LIVRAISON GRATUITE</strong> LIVRAISON GRATUITE <strong>LIVRAISON GRATUITE</strong></span>
     <span class="promo-sep">·</span>
-    <span>LIVRAISON GRATUITE <strong>IVRAISON GRATUIT</strong></span>
+    <span>LIVRAISON GRATUITE <strong>LIVRAISON GRATUITE</strong></span>
     <span class="promo-sep">·</span>
     <span class="promo-flash">⚡</span>
-    <span>OFFRE SPÉCIALE —<strong>IVRAISON GRATUIT</strong> IVRAISON GRATUIT<strong>IVRAISON GRATUIT</strong></span>
+    <span>LIVRAISON GRATUITE<strong>LIVRAISON GRATUITE</strong> LIVRAISON GRATUITE<strong>LIVRAISON GRATUITE</strong></span>
     <span class="promo-sep">·</span>
-    <span>LIVRAISON GRATUITE <strong>IVRAISON GRATUIT</strong></span>
+    <span>LIVRAISON GRATUITE <strong>LIVRAISON GRATUITE</strong></span>
     <span class="promo-sep">·</span>
   </div>
   <button class="promo-banner-close" onclick="document.getElementById('promoBanner').style.display='none'">×</button>
@@ -95,6 +84,7 @@
   <nav id="mainNav">
     <a href="#products" onclick="closeMenu()">Collections</a>
     <a href="#promos" onclick="closeMenu()">Promotions</a>
+    <a href="#packs" onclick="closeMenu()">Packs</a>
     <a href="#maison" onclick="closeMenu()">La Maison</a>
     <a href="#footer" onclick="closeMenu()">Contact</a>
   </nav>
@@ -190,6 +180,17 @@
 </section>
 
 <!-- PRODUCTS -->
+<!-- PACKS SECTION -->
+<section class="packs-sec" id="packs">
+  <div class="packs-header" id="packsHeader">
+    <span class="packs-tag">Offres Spéciales</span>
+    <h2 class="packs-title">Nos <em>Packs</em></h2>
+    <p class="packs-subtitle">Des offres exclusives pour vous et vos proches</p>
+    <div class="packs-divider"></div>
+  </div>
+  <div class="packs-grid" id="packsGrid"></div>
+</section>
+
 <section class="products-sec" id="products">
   <div class="products-top">
     <div>

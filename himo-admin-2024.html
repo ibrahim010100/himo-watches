@@ -362,6 +362,9 @@
       <button class="sb-item" onclick="showPanel('promos',this)">
         <span class="sb-item-icon">🎯</span> Promotions
       </button>
+      <button class="sb-item" onclick="showPanel('packs',this)">
+        <span class="sb-item-icon">🎁</span> Packs
+      </button>
       <div class="sb-section">Compte</div>
       <button class="sb-item" onclick="showPanel('settings',this)">
         <span class="sb-item-icon">⚙️</span> Paramètres
@@ -526,6 +529,42 @@
         </div>
         <div id="promosList" style="padding:20px">
           <div class="empty"><div class="empty-icon">🎯</div><div class="empty-txt">Aucune promotion active</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PANEL: PACKS ===== -->
+    <div class="panel" id="panel-packs">
+      <div class="page-header">
+        <div class="page-title">🎁 Packs</div>
+        <div class="page-sub">Gérez vos packs couple et cadeau</div>
+      </div>
+      <div class="table-card" style="padding:24px;margin-bottom:20px">
+        <div class="chart-title" style="margin-bottom:20px">➕ Ajouter un Pack</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-grp"><label class="flbl">Nom du Pack *</label><input class="finp" id="packName" placeholder="Ex: Pack Couple Casio"></div>
+          <div class="form-grp"><label class="flbl">Type *</label>
+            <select class="finp" id="packType">
+              <option value="cadeau">🎁 Pack Cadeau</option>
+              <option value="couple">💑 Pack Couple</option>
+            </select>
+          </div>
+          <div class="form-grp"><label class="flbl">Prix (MAD) *</label><input class="finp" id="packPrice" type="number" placeholder="Ex: 1500"></div>
+          <div class="form-grp"><label class="flbl">Ancien Prix (MAD)</label><input class="finp" id="packOldPrice" type="number" placeholder="Ex: 2000 (optionnel)"></div>
+          <div class="form-grp" style="grid-column:1/-1"><label class="flbl">Description</label><input class="finp" id="packDesc" placeholder="Ex: Saعa pour lui + saعa pour elle avec boite cadeau"></div>
+          <div class="form-grp" style="grid-column:1/-1"><label class="flbl">Image URL</label><input class="finp" id="packImg" placeholder="https://..."></div>
+          <div class="form-grp"><label class="flbl">Badge</label><input class="finp" id="packBadge" placeholder="Ex: Bestseller (optionnel)"></div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn-gold" style="width:100%;height:42px" onclick="addPack()">✦ Ajouter le Pack</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div style="padding:20px 24px;border-bottom:1px solid rgba(201,169,110,0.08)">
+          <div class="chart-title" style="margin:0">Packs Actifs</div>
+        </div>
+        <div id="packsList" style="padding:20px">
+          <div class="empty"><div class="empty-icon">🎁</div><div class="empty-txt">Aucun pack</div></div>
         </div>
       </div>
     </div>
@@ -738,6 +777,7 @@ function doLogout() {
 // ============================================
 function showPanel(name, btn) {
   if (name === 'promos') loadPromosPanel();
+  if (name === 'packs')  loadPacksPanel();
   if (name === 'settings') loadWASettings();
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
@@ -1472,6 +1512,76 @@ function playNotifSound() {
       osc.stop(ctx.currentTime + i*0.12 + 0.2);
     });
   } catch(e) {}
+}
+
+// ============================================
+// PACKS
+// ============================================
+let allPacks = [];
+
+async function loadPacksPanel() {
+  const el = document.getElementById('packsList');
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray)">⏳ Chargement...</div>';
+  try {
+    const data = await apiFetch('/packs/all');
+    allPacks = Array.isArray(data) ? data : [];
+    if (!allPacks.length) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">🎁</div><div class="empty-txt">Aucun pack</div></div>';
+      return;
+    }
+    el.innerHTML = allPacks.map((pk, i) => `
+      <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid rgba(201,169,110,0.08)">
+        ${pk.image_url ? `<img src="${pk.image_url}" style="width:60px;height:60px;object-fit:cover;border:1px solid rgba(201,169,110,0.2)">` : `<div style="width:60px;height:60px;background:#1e1c18;display:flex;align-items:center;justify-content:center;font-size:28px">${pk.type==='couple'?'💑':'🎁'}</div>`}
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--cream);font-size:14px">${pk.name}</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:2px">${pk.type==='couple'?'💑 Pack Couple':'🎁 Pack Cadeau'} · MAD ${Number(pk.price).toLocaleString('fr-MA')}</div>
+          ${pk.description ? `<div style="font-size:11px;color:var(--gray-light);margin-top:4px">${pk.description}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:8px">
+          <span style="font-size:10px;padding:3px 8px;border:1px solid ${pk.active?'#4caf50':'#f44336'};color:${pk.active?'#4caf50':'#f44336'}">${pk.active?'Actif':'Inactif'}</span>
+          <button onclick="togglePack(${i})" style="background:none;border:1px solid rgba(201,169,110,0.3);color:var(--gold);padding:4px 10px;font-size:10px;cursor:pointer">${pk.active?'Désactiver':'Activer'}</button>
+          <button onclick="deletePack(${i})" style="background:none;border:1px solid rgba(244,67,54,0.3);color:#f44336;padding:4px 10px;font-size:10px;cursor:pointer">🗑</button>
+        </div>
+      </div>`).join('');
+  } catch(err) {
+    el.innerHTML = `<div class="empty"><div class="empty-txt">Erreur: ${err.message}</div></div>`;
+  }
+}
+
+async function addPack() {
+  const name     = document.getElementById('packName').value.trim();
+  const type     = document.getElementById('packType').value;
+  const price    = parseFloat(document.getElementById('packPrice').value);
+  const oldPrice = parseFloat(document.getElementById('packOldPrice').value) || null;
+  const desc     = document.getElementById('packDesc').value.trim();
+  const img      = document.getElementById('packImg').value.trim();
+  const badge    = document.getElementById('packBadge').value.trim();
+  if (!name || !price) { toast('Erreur', 'Nom et prix sont requis', 'err'); return; }
+  try {
+    await apiFetch('/packs', { method:'POST', body:{ name, type, price, old_price: oldPrice, description: desc, image_url: img, badge } });
+    toast('✅ Pack ajouté', name, '');
+    ['packName','packDesc','packImg','packBadge','packPrice','packOldPrice'].forEach(id => document.getElementById(id).value = '');
+    loadPacksPanel();
+  } catch(err) { toast('Erreur', err.message, 'err'); }
+}
+
+async function deletePack(idx) {
+  if (!confirm('Supprimer ce pack?')) return;
+  const pk = allPacks[idx];
+  try {
+    await apiFetch('/packs/' + pk.id, { method:'DELETE' });
+    toast('Supprimé', pk.name, '');
+    loadPacksPanel();
+  } catch(err) { toast('Erreur', err.message, 'err'); }
+}
+
+async function togglePack(idx) {
+  const pk = allPacks[idx];
+  try {
+    await apiFetch('/packs/' + pk.id, { method:'PUT', body:{ ...pk, active: pk.active ? 0 : 1 } });
+    toast('Modifié', pk.active ? 'Pack désactivé' : 'Pack activé', '');
+    loadPacksPanel();
+  } catch(err) { toast('Erreur', err.message, 'err'); }
 }
 
 </script>
