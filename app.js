@@ -259,18 +259,39 @@ function openPackOrder(packId) {
   quickPromoPrice = null;
   window._currentPackId = packId;
 
-  const typeLabel = pk.type === 'couple' ? '💑 Pack Couple' : '🎁 Pack Cadeau';
+  const typeLabel = pk.type === 'couple' ? '💑 باك كوبل' : '🎁 باك كادو';
   const displayPrice = Number(pk.price);
 
-  document.getElementById('qoTitle').textContent = 'Commander';
+  document.getElementById('qoTitle').textContent = 'اطلب الآن';
   document.getElementById('qoProdInfo').textContent = typeLabel + ' — ' + pk.name;
   document.getElementById('qoProdRow').innerHTML = `
     <div class="qo-thumb">${pk.image_url ? `<img src="${pk.image_url}" alt="">` : (pk.type === 'couple' ? '💑' : '🎁')}</div>
     <div class="qo-info">
       <div class="qo-brand">${typeLabel}</div>
       <div class="qo-name">${pk.name}</div>
-      <div class="qo-price">MAD ${displayPrice.toLocaleString('fr-MA')}</div>
+      <div class="qo-price">MAD ${Math.round(displayPrice).toLocaleString('fr-MA')}</div>
     </div>`;
+
+  // Arabic labels
+  document.getElementById('mdlInfoTitle').textContent = 'معلوماتك';
+  document.getElementById('mdlPrenom').textContent = 'الاسم *';
+  document.getElementById('mdlTel').textContent = 'الهاتف *';
+  document.getElementById('mdlVille').textContent = 'المدينة *';
+  document.getElementById('mdlPay').textContent = 'طريقة الدفع *';
+  document.getElementById('mdlAddr').textContent = 'العنوان *';
+  document.getElementById('qoNom').placeholder = 'محمد';
+  document.getElementById('qoTel').placeholder = '06XXXXXXXX';
+  document.getElementById('qoVille').placeholder = 'الدار البيضاء، الرباط، مراكش...';
+  document.getElementById('qoAddr').placeholder = 'الحي، الشارع، المدينة...';
+
+  // Arabic payment options
+  const qoPay = document.getElementById('qoPay');
+  qoPay.innerHTML = `
+    <option value="">اختر...</option>
+    <option value="Paiement à la livraison" selected>الدفع عند الاستلام</option>
+    <option value="Virement bancaire">تحويل بنكي</option>
+    <option value="CIH Pay">CIH Pay</option>
+  `;
 
   ['qoNom','qoTel','qoAddr'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('qoVille').value = '';
@@ -538,9 +559,39 @@ function openQuickOrder(id, promoPrice) {
   quickPromoPrice = promoPrice || null;
   const p = products.find(x => x.id === id);
   if (!p) return;
+  window._currentPackId = null;
   const displayPrice = promoPrice || p.price;
-  document.getElementById('qoTitle').textContent = 'Commander';
+  const isAr = (currentLang || _cl) === 'ar';
+
+  document.getElementById('qoTitle').textContent = isAr ? 'اطلب الآن' : 'Commander';
   document.getElementById('qoProdInfo').textContent = p.brand + ' — ' + p.model;
+
+  document.getElementById('mdlInfoTitle').textContent = isAr ? 'معلوماتك' : 'Vos Informations';
+  document.getElementById('mdlPrenom').textContent = isAr ? 'الاسم *' : 'Prénom *';
+  document.getElementById('mdlTel').textContent = isAr ? 'الهاتف *' : 'Téléphone *';
+  document.getElementById('mdlVille').textContent = isAr ? 'المدينة *' : 'Ville *';
+  document.getElementById('mdlPay').textContent = isAr ? 'طريقة الدفع *' : 'Paiement *';
+  document.getElementById('mdlAddr').textContent = isAr ? 'العنوان *' : 'Adresse *';
+  document.getElementById('qoNom').placeholder = isAr ? 'محمد' : 'Mohammed';
+  document.getElementById('qoTel').placeholder = isAr ? '06XXXXXXXX' : '+212 681 345 355';
+  document.getElementById('qoVille').placeholder = isAr ? 'الدار البيضاء، الرباط...' : 'Casablanca, Rabat, Marrakech...';
+  document.getElementById('qoAddr').placeholder = isAr ? 'الحي، الشارع، المدينة...' : 'N° rue, Quartier, Ville...';
+
+  const qoPay = document.getElementById('qoPay');
+  if (isAr) {
+    qoPay.innerHTML = `
+      <option value="">اختر...</option>
+      <option value="Paiement à la livraison" selected>الدفع عند الاستلام</option>
+      <option value="Virement bancaire">تحويل بنكي</option>
+      <option value="CIH Pay">CIH Pay</option>`;
+  } else {
+    qoPay.innerHTML = `
+      <option value="">Choisir...</option>
+      <option value="Paiement à la livraison" selected>Paiement à la livraison</option>
+      <option value="Virement bancaire">Virement bancaire</option>
+      <option value="CIH Pay">CIH Pay</option>`;
+  }
+
   document.getElementById('qoProdRow').innerHTML = `
     <div class="qo-thumb">${p.img ? `<img src="${p.img}" alt="">` : p.emoji}</div>
     <div class="qo-info">
@@ -817,30 +868,36 @@ document.addEventListener('click', e => {
 
 /* MULTI-LANGUE HIMO.WATCHES */
 var LANGS = {
-  fr: { nav_col:'Collections', nav_pro:'Promotions', nav_mai:'La Maison', nav_con:'Contact',
+  fr: { nav_col:'Collections', nav_pro:'Promotions', nav_mai:'La Maison', nav_con:'Contact', nav_packs:'Packs',
     h_t1:"L'Art", h_t2:'du Temps', h_sub:'Montres de Prestige - Maroc',
     h_b1:'Explorer la Collection', h_b2:'Offres du Jour', h_founded:'MAISON HIMO 2024',
     btn_cmd:'Commander Maintenant', btn_pan:'+ Ajouter au panier',
     btn_avis:'Voir les avis', t_stock:'En stock', t_liv:'Livraison rapide', t_no:'Pas encore note',
     cd_t:'CES OFFRES EXPIRENT DANS', cd_h:'HEURES', cd_m:'MIN', cd_s:'SEC',
     ft_con:'CONTACT', ft_hor:'Lun-Sam: 9h-20h', ft_liv:'Maroc - Livraison Nationale',
-    ft_r:'2024 HIMO.WATCHES', f_all:'Tous', f_h:'Hommes', f_f:'Femmes', f_c:'Couple',mdl_info:'Vos Informations',mdl_prenom:'Prénom *',mdl_tel:'Téléphone *',mdl_ville:'Ville *',mdl_pay:'Paiement *',mdl_addr:'Adresse *',mdl_conf:'✦ Confirmer la Commande',mdl_wa:'◎ Commander par WhatsApp' },
-  ar: { nav_col:'المجموعات', nav_pro:'العروض', nav_mai:'دارنا', nav_con:'اتصل بنا',
+    ft_r:'2024 HIMO.WATCHES', f_all:'Tous', f_h:'Hommes', f_f:'Femmes', f_c:'Couple',
+    mdl_info:'Vos Informations',mdl_prenom:'Prénom *',mdl_tel:'Téléphone *',mdl_ville:'Ville *',mdl_pay:'Paiement *',mdl_addr:'Adresse *',mdl_conf:'✦ Confirmer la Commande',mdl_wa:'◎ Commander par WhatsApp',
+    packs_tag:'Offres Spéciales', packs_title:'Nos <em>Packs</em>', packs_sub:'Des offres exclusives pour vous et vos proches', pack_btn:'✦ Commander ce Pack' },
+  ar: { nav_col:'المجموعات', nav_pro:'العروض', nav_mai:'دارنا', nav_con:'اتصل بنا', nav_packs:'الباقات',
     h_t1:'فن', h_t2:'الوقت', h_sub:'ساعات فاخرة - المغرب',
     h_b1:'اكتشف', h_b2:'عروض اليوم', h_founded:'دار هيمو 2024',
     btn_cmd:'اطلب الآن', btn_pan:'أضف للسلة',
     btn_avis:'التقييمات', t_stock:'متوفر', t_liv:'توصيل سريع', t_no:'لا تقييم',
     cd_t:'هذه العروض تنتهي', cd_h:'ساعة', cd_m:'دقيقة', cd_s:'ثانية',
     ft_con:'تواصل', ft_hor:'الاث-السب: 9-20', ft_liv:'المغرب - توصيل وطني',
-    ft_r:'2024 HIMO.WATCHES', f_all:'الكل', f_h:'رجالي', f_f:'نسائي', f_c:'زوجين',mdl_info:'معلوماتك',mdl_prenom:'الاسم *',mdl_tel:'الهاتف *',mdl_ville:'المدينة *',mdl_pay:'طريقة الدفع *',mdl_addr:'العنوان *',mdl_conf:'تأكيد الطلب ♥',mdl_wa:'◎ اطلب عبر واتساب' },
-  en: { nav_col:'Collections', nav_pro:'Promotions', nav_mai:'Our Story', nav_con:'Contact',
+    ft_r:'2024 HIMO.WATCHES', f_all:'الكل', f_h:'رجالي', f_f:'نسائي', f_c:'زوجين',
+    mdl_info:'معلوماتك',mdl_prenom:'الاسم *',mdl_tel:'الهاتف *',mdl_ville:'المدينة *',mdl_pay:'طريقة الدفع *',mdl_addr:'العنوان *',mdl_conf:'تأكيد الطلب ♥',mdl_wa:'◎ اطلب عبر واتساب',
+    packs_tag:'عروض حصرية', packs_title:'<em>باقاتنا</em>', packs_sub:'عروض مميزة لك ولأحبائك', pack_btn:'✦ اطلب هذه الباقة' },
+  en: { nav_col:'Collections', nav_pro:'Promotions', nav_mai:'Our Story', nav_con:'Contact', nav_packs:'Packs',
     h_t1:'The Art', h_t2:'of Time', h_sub:'Prestige Watches - Morocco',
     h_b1:'Explore Collection', h_b2:"Today's Deals", h_founded:'MAISON HIMO 2024',
     btn_cmd:'Order Now', btn_pan:'+ Add to Cart',
     btn_avis:'See Reviews', t_stock:'In Stock', t_liv:'Fast Delivery', t_no:'Not yet rated',
     cd_t:'THESE OFFERS EXPIRE IN', cd_h:'HRS', cd_m:'MIN', cd_s:'SEC',
     ft_con:'CONTACT', ft_hor:'Mon-Sat: 9AM-8PM', ft_liv:'Morocco - Nationwide Delivery',
-    ft_r:'2024 HIMO.WATCHES', f_all:'All', f_h:'Men', f_f:'Women', f_c:'Couple',mdl_info:'Your Information',mdl_prenom:'First Name *',mdl_tel:'Phone *',mdl_ville:'City *',mdl_pay:'Payment *',mdl_addr:'Address *',mdl_conf:'✦ Confirm Order',mdl_wa:'◎ Order via WhatsApp' }
+    ft_r:'2024 HIMO.WATCHES', f_all:'All', f_h:'Men', f_f:'Women', f_c:'Couple',
+    mdl_info:'Your Information',mdl_prenom:'First Name *',mdl_tel:'Phone *',mdl_ville:'City *',mdl_pay:'Payment *',mdl_addr:'Address *',mdl_conf:'✦ Confirm Order',mdl_wa:'◎ Order via WhatsApp',
+    packs_tag:'Special Offers', packs_title:'Our <em>Packs</em>', packs_sub:'Exclusive offers for you and your loved ones', pack_btn:'✦ Order this Pack' }
 };
 var currentLang = localStorage.getItem("hw_lang") || "fr"; _cl = currentLang;
 // t() at top of file
@@ -850,7 +907,7 @@ function setLang(lang) {
   document.documentElement.lang=lang;
   document.documentElement.dir=lang==="ar"?"rtl":"ltr";
   ["fr","ar","en"].forEach(function(l){var b=document.getElementById("lang-"+l);if(b)b.classList.toggle("active",l===lang);});
-  applyAllTranslations(); renderProducts(); renderPromos();
+  applyAllTranslations(); renderProducts(); renderPromos(); renderPacks();
 }
 function applyAllTranslations() {
   var T=LANGS[currentLang]||LANGS.fr;
