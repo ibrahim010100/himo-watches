@@ -222,7 +222,7 @@ function renderPacks() {
             ${pk.old_price ? `<span class="pack-card-old-price">MAD ${Math.round(pk.old_price).toLocaleString('fr-MA')}</span>` : ''}
             ${saving ? `<span class="pack-card-saving">Économie ${saving} MAD</span>` : ''}
           </div>
-          <button class="pack-card-btn" onclick="openPackOrder(${pk.id})">✦ COMMANDER CE PACK</button>
+          <button class="pack-card-btn" onclick="openPackOrder(${pk.id})">${(LANGS[currentLang||_cl||'fr']||LANGS.fr).pack_btn || '✦ COMMANDER CE PACK'}</button>
         </div>
       </div>`;
   }).join('');
