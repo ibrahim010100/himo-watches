@@ -254,20 +254,30 @@ function renderPacks() {
 function openPackOrder(packId) {
   const pk = packs.find(p => p.id === packId);
   if (!pk) return;
-  // Ouvrir quick order avec les infos du pack
-  const qoBg = document.getElementById('quickOrderBg');
-  if (!qoBg) return;
-  document.getElementById('qoProductName').textContent = pk.name;
-  document.getElementById('qoBrand').textContent = pk.type === 'couple' ? '💑 Pack Couple' : '🎁 Pack Cadeau';
-  document.getElementById('qoPrice').textContent = 'MAD ' + Number(pk.price).toLocaleString('fr-MA');
-  const qoImg = document.getElementById('qoProductImg');
-  if (qoImg) qoImg.src = pk.image_url || '';
-  // Store pack info for order
-  qoBg.dataset.packId = packId;
-  qoBg.dataset.packName = pk.name;
-  qoBg.dataset.packPrice = pk.price;
+
+  quickPid = null;
+  quickPromoPrice = null;
+  window._currentPackId = packId;
+
+  const typeLabel = pk.type === 'couple' ? '💑 Pack Couple' : '🎁 Pack Cadeau';
+  const displayPrice = Number(pk.price);
+
+  document.getElementById('qoTitle').textContent = 'Commander';
+  document.getElementById('qoProdInfo').textContent = typeLabel + ' — ' + pk.name;
+  document.getElementById('qoProdRow').innerHTML = `
+    <div class="qo-thumb">${pk.image_url ? `<img src="${pk.image_url}" alt="">` : (pk.type === 'couple' ? '💑' : '🎁')}</div>
+    <div class="qo-info">
+      <div class="qo-brand">${typeLabel}</div>
+      <div class="qo-name">${pk.name}</div>
+      <div class="qo-price">MAD ${displayPrice.toLocaleString('fr-MA')}</div>
+    </div>`;
+
+  ['qoNom','qoTel','qoAddr'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('qoVille').value = '';
   document.getElementById('qoPay').value = 'Paiement à la livraison';
-  qoBg.classList.add('on');
+  document.getElementById('qoStep1').style.display = 'block';
+  document.getElementById('qoStep2').style.display = 'none';
+  document.getElementById('quickOrderBg').classList.add('on');
 }
 
 async function loadReviewsForProduct(pid) {
@@ -554,16 +564,28 @@ async function placeQuickOrder() {
   const addr  = document.getElementById('qoAddr').value.trim();
   if (!nom || !tel || !ville || !pay || !addr) { toast('Champs manquants', 'Remplissez tous les champs', 'err'); return; }
 
-  const p = products.find(x => x.id === quickPid);
-  if (!p) return;
-  const finalPrice = quickPromoPrice || p.price;
+  let items, finalPrice;
+
+  // Pack order
+  if (window._currentPackId) {
+    const pk = packs.find(p => p.id === window._currentPackId);
+    if (!pk) return;
+    finalPrice = Number(pk.price);
+    items = [{ product_id: 0, brand: pk.type === 'couple' ? '💑 Pack Couple' : '🎁 Pack Cadeau', model: pk.name, price: finalPrice, quantity: 1 }];
+    window._currentPackId = null;
+  } else {
+    const p = products.find(x => x.id === quickPid);
+    if (!p) return;
+    finalPrice = quickPromoPrice || p.price;
+    items = [{ product_id: p.id, brand: p.brand, model: p.model, price: finalPrice, quantity: 1 }];
+  }
 
   const res = await apiFetch('/orders', {
     method: 'POST',
     body: {
       client: { nom, prenom: '', tel, email: '', addr, ville, pay },
-      items:  [{ product_id: p.id, brand: p.brand, model: p.model, price: finalPrice, quantity: 1 }],
-      total:  finalPrice,
+      items,
+      total: finalPrice,
     }
   });
 
