@@ -705,14 +705,13 @@ html[dir=rtl] .promo-badge{left:auto;right:14px;}
 
 .packs-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-  gap:32px;
-  max-width:800px;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:24px;
+  max-width:1100px;
   margin:0 auto;
   padding:0 32px;
   position:relative;
   z-index:1;
-  justify-items:center;
 }
 
 /* CARD */
@@ -729,6 +728,24 @@ html[dir=rtl] .promo-badge{left:auto;right:14px;}
              box-shadow 0.4s,
              opacity 0.5s;
 }
+.pack-card-img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  display:block;
+  transition:transform 0.6s ease;
+}
+.pack-card-img-placeholder{
+  width:100%;
+  height:160px;
+  background:linear-gradient(135deg,#1e1c18,#252118,#1e1c18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:48px;
+  position:relative;
+}
+.pack-card-desc{display:none;}
 .pack-card.pack-visible{
   opacity:1;
   transform:translateY(0);
@@ -765,13 +782,6 @@ html[dir=rtl] .promo-badge{left:auto;right:14px;}
 }
 .pack-card:hover::after{opacity:1;}
 
-.pack-card-img{
-  width:100%;
-  height:200px;
-  object-fit:cover;
-  display:block;
-  transition:transform 0.6s ease;
-}
 .pack-card:hover .pack-card-img{transform:scale(1.05);}
 
 .pack-card-img-placeholder{
