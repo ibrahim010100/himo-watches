@@ -218,8 +218,8 @@ function renderPacks() {
           ${pk.description ? `<div class="pack-card-desc">${pk.description}</div>` : ''}
           <div class="pack-card-sep"></div>
           <div class="pack-card-prices">
-            <span class="pack-card-price">MAD ${pk.price.toLocaleString('fr-MA')}</span>
-            ${pk.old_price ? `<span class="pack-card-old-price">MAD ${Number(pk.old_price).toLocaleString('fr-MA')}</span>` : ''}
+            <span class="pack-card-price">MAD ${Math.round(pk.price).toLocaleString('fr-MA')}</span>
+            ${pk.old_price ? `<span class="pack-card-old-price">MAD ${Math.round(pk.old_price).toLocaleString('fr-MA')}</span>` : ''}
             ${saving ? `<span class="pack-card-saving">Économie ${saving} MAD</span>` : ''}
           </div>
           <button class="pack-card-btn" onclick="openPackOrder(${pk.id})">✦ COMMANDER CE PACK</button>
@@ -601,7 +601,15 @@ async function placeQuickOrder() {
 }
 
 function orderWASingle() {
-  orderWAProduct(quickPid);
+  if (window._currentPackId) {
+    const pk = packs.find(p => p.id === window._currentPackId);
+    if (!pk) return;
+    const typeLabel = pk.type === 'couple' ? '💑 Pack Couple' : '🎁 Pack Cadeau';
+    const msg = `🌟 *Commande — HIMO.WATCHES*\n\n▸ ${typeLabel} — ${pk.name}\n💰 Prix: ${Math.round(pk.price).toLocaleString('fr-MA')} MAD\n\nBonjour, je souhaite commander ce pack. Merci!`;
+    window.open('https://wa.me/212681345355?text=' + encodeURIComponent(msg), '_blank');
+  } else {
+    orderWAProduct(quickPid);
+  }
 }
 
 /* ============================================
