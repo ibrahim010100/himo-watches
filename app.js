@@ -258,11 +258,14 @@ function openPackOrder(packId) {
   quickPid = null;
   quickPromoPrice = null;
   window._currentPackId = packId;
+  const isAr = (currentLang || _cl) === 'ar';
 
-  const typeLabel = pk.type === 'couple' ? '💑 باك كوبل' : '🎁 باك كادو';
+  const typeLabel = pk.type === 'couple'
+    ? (isAr ? '💑 باك كوبل' : '💑 Pack Couple')
+    : (isAr ? '🎁 باك كادو' : '🎁 Pack Cadeau');
   const displayPrice = Number(pk.price);
 
-  document.getElementById('qoTitle').textContent = 'اطلب الآن';
+  document.getElementById('qoTitle').textContent = isAr ? 'اطلب الآن' : 'Commander';
   document.getElementById('qoProdInfo').textContent = typeLabel + ' — ' + pk.name;
   document.getElementById('qoProdRow').innerHTML = `
     <div class="qo-thumb">${pk.image_url ? `<img src="${pk.image_url}" alt="">` : (pk.type === 'couple' ? '💑' : '🎁')}</div>
@@ -272,30 +275,34 @@ function openPackOrder(packId) {
       <div class="qo-price">MAD ${Math.round(displayPrice).toLocaleString('fr-MA')}</div>
     </div>`;
 
-  // Arabic labels
-  document.getElementById('mdlInfoTitle').textContent = 'معلوماتك';
-  document.getElementById('mdlPrenom').textContent = 'الاسم *';
-  document.getElementById('mdlTel').textContent = 'الهاتف *';
-  document.getElementById('mdlVille').textContent = 'المدينة *';
-  document.getElementById('mdlPay').textContent = 'طريقة الدفع *';
-  document.getElementById('mdlAddr').textContent = 'العنوان *';
-  document.getElementById('qoNom').placeholder = 'محمد';
+  document.getElementById('mdlInfoTitle').textContent = isAr ? 'معلوماتك' : 'Vos Informations';
+  document.getElementById('mdlPrenom').textContent = isAr ? 'الاسم *' : 'Prénom *';
+  document.getElementById('mdlTel').textContent = isAr ? 'الهاتف *' : 'Téléphone *';
+  document.getElementById('mdlVille').textContent = isAr ? 'المدينة *' : 'Ville *';
+  document.getElementById('mdlPay').textContent = isAr ? 'طريقة الدفع *' : 'Paiement *';
+  document.getElementById('mdlAddr').textContent = isAr ? 'العنوان *' : 'Adresse *';
+  document.getElementById('qoNom').placeholder = isAr ? 'محمد' : 'Mohammed';
   document.getElementById('qoTel').placeholder = '06XXXXXXXX';
-  document.getElementById('qoVille').placeholder = 'الدار البيضاء، الرباط، مراكش...';
-  document.getElementById('qoAddr').placeholder = 'الحي، الشارع، المدينة...';
+  document.getElementById('qoVille').placeholder = isAr ? 'الدار البيضاء، الرباط...' : 'Casablanca, Rabat...';
+  document.getElementById('qoAddr').placeholder = isAr ? 'الحي، الشارع، المدينة...' : 'N° rue, Quartier, Ville...';
 
-  // Arabic payment options
   const qoPay = document.getElementById('qoPay');
-  qoPay.innerHTML = `
-    <option value="">اختر...</option>
-    <option value="Paiement à la livraison" selected>الدفع عند الاستلام</option>
-    <option value="Virement bancaire">تحويل بنكي</option>
-    <option value="CIH Pay">CIH Pay</option>
-  `;
+  if (isAr) {
+    qoPay.innerHTML = `
+      <option value="">اختر...</option>
+      <option value="Paiement à la livraison" selected>الدفع عند الاستلام</option>
+      <option value="Virement bancaire">تحويل بنكي</option>
+      <option value="CIH Pay">CIH Pay</option>`;
+  } else {
+    qoPay.innerHTML = `
+      <option value="">Choisir...</option>
+      <option value="Paiement à la livraison" selected>Paiement à la livraison</option>
+      <option value="Virement bancaire">Virement bancaire</option>
+      <option value="CIH Pay">CIH Pay</option>`;
+  }
 
   ['qoNom','qoTel','qoAddr'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('qoVille').value = '';
-  document.getElementById('qoPay').value = 'Paiement à la livraison';
   document.getElementById('qoStep1').style.display = 'block';
   document.getElementById('qoStep2').style.display = 'none';
   document.getElementById('quickOrderBg').classList.add('on');
