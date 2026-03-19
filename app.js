@@ -301,6 +301,17 @@ function openPackOrder(packId) {
       <option value="CIH Pay">CIH Pay</option>`;
   }
 
+  // Translate modal buttons
+  const isAr2 = isAr;
+  const btnC = document.getElementById('btnConfirmOrder');
+  const btnW = document.getElementById('btnWASingle');
+  const btnS = document.getElementById('btnContinueShopping');
+  const sucT = document.getElementById('sucTitleModal');
+  if (btnC) btnC.textContent = isAr2 ? '✦ تأكيد الطلب' : '✦ Confirmer la Commande';
+  if (btnW) btnW.textContent = isAr2 ? '◎ الطلب عبر واتساب' : '◎ Commander par WhatsApp';
+  if (btnS) btnS.textContent = isAr2 ? 'مواصلة التسوق' : 'Continuer les Achats';
+  if (sucT) sucT.textContent = isAr2 ? '✓ تم تأكيد طلبك!' : 'Commande Confirmée !';
+
   ['qoNom','qoTel','qoAddr'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('qoVille').value = '';
   document.getElementById('qoStep1').style.display = 'block';
@@ -607,6 +618,16 @@ function openQuickOrder(id, promoPrice) {
       <div class="qo-price">MAD ${displayPrice.toLocaleString('fr-MA')}</div>
     </div>`;
   ['qoNom', 'qoTel', 'qoAddr'].forEach(i => document.getElementById(i).value = '');
+
+  // Translate modal buttons
+  const btnC2 = document.getElementById('btnConfirmOrder');
+  const btnW2 = document.getElementById('btnWASingle');
+  const btnS2 = document.getElementById('btnContinueShopping');
+  const sucT2 = document.getElementById('sucTitleModal');
+  if (btnC2) btnC2.textContent = isAr ? '✦ تأكيد الطلب' : '✦ Confirmer la Commande';
+  if (btnW2) btnW2.textContent = isAr ? '◎ الطلب عبر واتساب' : '◎ Commander par WhatsApp';
+  if (btnS2) btnS2.textContent = isAr ? 'مواصلة التسوق' : 'Continuer les Achats';
+  if (sucT2) sucT2.textContent = isAr ? '✓ تم تأكيد طلبك!' : 'Commande Confirmée !';
   document.getElementById('qoVille').value = '';
   document.getElementById('qoPay').value = 'Paiement à la livraison';
   document.getElementById('qoStep1').style.display = 'block';

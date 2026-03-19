@@ -62,14 +62,14 @@
 <div class="promo-banner" id="promoBanner">
   <div class="promo-banner-inner">
     <span class="promo-flash">⚡</span>
-    <span>LIVRAISON GRATUITE<strong>LIVRAISON GRATUITE</strong> LIVRAISON GRATUITE <strong>LIVRAISON GRATUITE</strong></span>
+    <span>OFFRE SPÉCIALE — <strong>-20% sur toutes les Casio</strong> avec le code <strong>CASIO20</strong></span>
     <span class="promo-sep">·</span>
-    <span>LIVRAISON GRATUITE <strong>LIVRAISON GRATUITE</strong></span>
+    <span>LIVRAISON GRATUITE dès <strong>5 000 MAD</strong></span>
     <span class="promo-sep">·</span>
     <span class="promo-flash">⚡</span>
-    <span>LIVRAISON GRATUITE<strong>LIVRAISON GRATUITE</strong> LIVRAISON GRATUITE<strong>LIVRAISON GRATUITE</strong></span>
+    <span>OFFRE SPÉCIALE — <strong>-20% sur toutes les Casio</strong> avec le code <strong>CASIO20</strong></span>
     <span class="promo-sep">·</span>
-    <span>LIVRAISON GRATUITE <strong>LIVRAISON GRATUITE</strong></span>
+    <span>LIVRAISON GRATUITE dès <strong>5 000 MAD</strong></span>
     <span class="promo-sep">·</span>
   </div>
   <button class="promo-banner-close" onclick="document.getElementById('promoBanner').style.display='none'">×</button>
@@ -252,7 +252,7 @@
   <div class="foot-contact">
     <div class="foot-col-ttl">Contact</div>
     <p>WhatsApp: <a href="https://wa.me/212681345355">+212 681 345 355</a><br>
-    Email: <a href="/cdn-cgi/l/email-protection#9bf8f4f5effaf8efdbf3f2f6f4b5ecfaeff8f3fee8"><span class="__cf_email__" data-cfemail="f89b97968c999b8cb890919597d68f998c9b909d8b">himowatches@gmail.com</span></a><br>
+    Email: <a href="/cdn-cgi/l/email-protection#9bf8f4f5effaf8efdbf3f2f6f4b5ecfaeff8f3fee8"><span class="__cf_email__" data-cfemail="f89b97968c999b8cb890919597d68f998c9b909d8b">[email&#160;protected]</span></a><br>
     <span id="footLivraison">Maroc — Livraison Nationale</span><br><span id="footHoraires">Lun – Sam: 9h00 – 20h00</span></p>
   </div>
 </footer>
@@ -317,16 +317,16 @@
           <label class="flbl" id="mdlAddr">Adresse *</label>
           <input class="finp" id="qoAddr" placeholder="N° rue, Quartier, Ville...">
         </div>
-        <button class="btn-gold" style="width:100%" onclick="placeQuickOrder()">✦ Confirmer la Commande</button>
-        <button class="btn-wa" style="margin-top:10px" onclick="orderWASingle()">◎ Commander par WhatsApp</button>
+        <button class="btn-gold" style="width:100%" onclick="placeQuickOrder()" id="btnConfirmOrder">✦ Confirmer la Commande</button>
+        <button class="btn-wa" style="margin-top:10px" onclick="orderWASingle()" id="btnWASingle">◎ Commander par WhatsApp</button>
       </div>
       <!-- Step 2: Success -->
       <div id="qoStep2" style="display:none;text-align:center;padding:20px 0">
         <div class="suc-icon">✓</div>
-        <div class="suc-title">Commande Confirmée !</div>
+        <div class="suc-title" id="sucTitleModal">Commande Confirmée !</div>
         <p class="suc-msg">Merci ! Nous vous contacterons sur <strong id="qoConfTel"></strong> pour confirmer la livraison.</p>
         <div class="suc-num" id="qoOrderNum"></div>
-        <button class="btn-gold" onclick="closeModal('quickOrderBg')">Continuer les Achats</button>
+        <button class="btn-gold" onclick="closeModal('quickOrderBg')" id="btnContinueShopping">Continuer les Achats</button>
       </div>
     </div>
   </div>
