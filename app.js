@@ -16,7 +16,7 @@ function t(key) { var src=window.LANGS||LANGS_INIT; var L=src[_cl]||src.fr; retu
    Connecté au backend Node.js + MySQL
    ============================================ */
 
-const API = 'https://himo-backend-production.up.railway.app/api';
+const API = 'https://himo-backend-7cpn.onrender.com/api';
 
 function getWANumber() {
   return localStorage.getItem('hw_wa_number') || '212681345355';

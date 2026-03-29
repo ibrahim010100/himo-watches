@@ -601,7 +601,7 @@
           <div class="chart-title" style="margin-bottom:20px">ℹ️ Informations Système</div>
           <div style="font-size:12px;color:var(--gray);line-height:2.2">
             <div>API: <span style="color:var(--gold)" id="apiStatus">Vérification...</span></div>
-            <div>Backend: <span style="color:var(--white)" id="apiUrl">https://himo-backend-production.up.railway.app</span></div>
+            <div>Backend: <span style="color:var(--white)" id="apiUrl">https://himo-backend-7cpn.onrender.com</span></div>
             <div>Version: <span style="color:var(--white)">HIMO.WATCHES v1.0.0</span></div>
           </div>
         </div>
@@ -662,7 +662,7 @@
 // ============================================
 // CONFIG
 // ============================================
-const API = 'https://himo-backend-production.up.railway.app/api';
+const API = 'https://himo-backend-7cpn.onrender.com/api';
 let token     = localStorage.getItem('hw_admin_token') || '';
 let adminEmail = localStorage.getItem('hw_admin_email') || '';
 let allProducts = [];
@@ -1294,7 +1294,7 @@ let evtSource  = null;
 function initSSE() {
   if (!token) return;
   if (evtSource) return; // mashi katcreey tnin
-  evtSource = new EventSource('https://himo-backend-production.up.railway.app/api/notifications/stream');
+  evtSource = new EventSource('https://himo-backend-7cpn.onrender.com/api/notifications/stream');
 
   evtSource.onopen = () => {
     console.log('🔔 Connecté aux notifications');
